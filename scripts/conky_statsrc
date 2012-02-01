@@ -1,0 +1,60 @@
+#-------------------------------------------------------------------------------
+# file:            ./scripts/.conky_statsrc                                              
+# author:          Abdi Dahir - I have no website :(                           
+# modified:        December 2011                                               
+# vim: set fenc=utf-8:nu:ai:si:et:ts=4:sw=4:                      
+#                                                                             
+# Conky settings, displays stuff. Pump it to bar. s'all good.
+# Mostly default settings + battery
+#-------------------------------------------------------------------------------
+
+
+background yes
+xftfont terminus:size=12
+gap_y -1024
+double_buffer yes
+out_to_console yes
+out_to_x no 
+own_window yes 
+own_window_type desktop
+update_interval 0.5
+total_run_tomes 0
+userspacer none 
+
+TEXT
+# Network Connection -----------------------------------------------------------
+NET: ^fg(green)${wireless_link_qual_perc wlan0}%^fg() | \
+${if_match ${wireless_link_qual_perc wlan0} < 70}\  
+NET: ^fg(yellow)${wireless_link_qual_perc wlan0}%^fg() | \
+${endif}\
+${if_match ${wireless_link_qual_perc wlan0} < 40}\  
+NET: ^fg(orange)${wireless_link_qual_perc wlan0}%^fg() | \
+${endif}\
+${if_match ${wireless_link_qual_perc wlan0} < 10}\  
+NET: ^fg(red)${wireless_link_qual_perc wlan0}%^fg() | \
+${endif}\
+# Memory usage -----------------------------------------------------------------
+RAM: $memperc% | \
+# CPU usage --------------------------------------------------------------------
+CPU: $cpu% | \
+# Battery  ---------------------------------------------------------------------
+${if_match ${battery_percent} < 5}\
+BAT: ^fg(red)${battery_short}^fg() | \
+${else}\
+${if_match ${battery_percent} < 65}\
+BAT: ^fg(orange)${battery_short}^fg() | \
+${else}\
+${if_match ${battery_percent} < 70}\
+BAT: ^fg(yellow)${battery_short}^fg() | \
+${else}\
+${if_match ${battery_percent} < 101}\
+BAT: ^fg(green)${battery_short}^fg() | \
+${endif}\
+${endif}\
+${endif}\
+# Time and Date ----------------------------------------------------------------
+${time %b %e %H:%M:%S} | \
+# Sound ------------------------------------------------------------------------
+SND: ^fg(blue)${execi 2 ~/scripts/sound.sh}^fg() | \
+# Weather ----------------------------------------------------------------------
+${execi 300 ~/scripts/weather.sh "NAM|CA|ON|TORONTO"}

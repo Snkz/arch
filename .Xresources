@@ -1,0 +1,68 @@
+!-------------------------------------------------------------------------------
+! file:            ~/.Xresources                                               
+! author:          Abdi Dahir - I have no website :(                           
+! modified:        December 2011                                               
+! vim: set fenc=utf-8:nu:ai:si:et:ts=4:sw=4:ft=xdefaults:                      
+!                                                                             
+! Babies very first xresource file                                             
+! must merge using xrdb -merge .Xresources in .xinit                           
+! Most of these settings were "Inspired" by online resources, mostly arch wiki 
+! ------------------------------------------------------------------------------
+
+
+! Xcursor ----------------------------------------------------------------------
+
+Xcursor.theme:               Vanilla-DMZ-AA
+Xcursor.size:                20
+
+! Xft settings -----------------------------------------------------------------
+
+Xft.dpi:                     96
+Xft.antialias:               true
+Xft.rgba:                    rgb
+Xft.hinting:                 true
+Xft.hintstyle:               hintslight
+
+! xterm resource ---------------------------------------------------------------
+
+xterm*geometry:              80x25
+xterm*faceName:              terminus:pixelsize=12
+!xterm*font:                 -*-aqui-medium-r-*-*-14-*-*-*-*-*-iso8859-*
+xterm*dynamicColors:         true
+xterm*utf8:                  2
+xterm*eightBitInput:         true
+xterm*saveLines:             512
+xterm*scrollTtyKeypress:     true
+xterm*scrollTtyOutput:       false
+!xterm*scrollBar:            true
+!xterm*rightScrollBar:       true
+!xterm*jumpScroll:           true
+!xterm*multiScroll:          true
+xterm*toolbar:               false
+
+! XTerm defaults ---------------------------------------------------------------
+XTerm*loginShell:            true 
+XTerm*borderColor:           gray90
+!XTerm*visualBell:           true 
+!XTerm*bellIsUrgent:		 false
+
+! XTerm Colour Scheme: Dark ----------------------------------------------------
+XTerm*foreground:            #9F9F9F
+XTerm*background:            #000000
+XTerm*color0:                #000000
+XTerm*color1:                #9E1828
+XTerm*color2:                #AECE92
+XTerm*color3:                #968A38
+XTerm*color4:                #414171
+XTerm*color5:                #963C59
+XTerm*color6:                #418179
+XTerm*color7:                #BEBEBE
+XTerm*color8:                #666666
+XTerm*color9:                #CF6171
+XTerm*color10:               #C5F799
+XTerm*color11:               #FFF796
+XTerm*color12:               #4186BE
+XTerm*color13:               #CF9EBE
+XTerm*color14:               #71BEBE
+XTerm*color15:               #FFFFFF
+
