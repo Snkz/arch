@@ -21,4 +21,4 @@ total_run_tomes 0
 userspacer none 
 
 TEXT
-^fg(lightblue)| ${scroll 12 2 $nodename - Arch $sysname}^fg()
+^fg(lightblue) ${scroll 40 2 $nodename - Arch $sysname Look at me I'm scrolling weeeeeeeee}^fg()

@@ -11,7 +11,7 @@
 vol=`amixer get Master | grep "Mono:" | awk '{print $4}'`
 if [ $vol == "[0%]" ]
 then
-	echo "[Mute]"
+	echo "0"
 else
-	echo $vol
+	echo $vol | tr -d "[]"
 fi

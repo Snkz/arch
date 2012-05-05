@@ -1,0 +1,36 @@
+#-------------------------------------------------------------------------------
+# file:            ./scripts/conky_weather                                        
+# author:          Abdi Dahir - I have no website :(                           
+# modified:        December 2011                                               
+# vim: set fenc=utf-8:nu:ai:si:et:ts=4:sw=4:                      
+#                                                                             
+# Conky settings, displays stuff. Pump it to bar. s'all good.
+# Mostly default settings + battery
+#-------------------------------------------------------------------------------
+
+
+background yes
+xftfont terminus:size=12
+gap_y -1024
+double_buffer yes
+out_to_console yes
+out_to_x no 
+own_window yes 
+own_window_type desktop
+update_interval 0.5
+total_run_tomes 0
+userspacer none 
+
+TEXT
+# CPU usage --------------------------------------------------------------------
+^i(confs/xbm8x8/cpu.xbm) $cpu% \
+# Memory usage -----------------------------------------------------------------
+^i(confs/xbm8x8/mem.xbm) $memperc% \
+# Weather ----------------------------------------------------------------------
+^i(confs/xbm8x8/temp.xbm) ${execi 300 ~/scripts/weather.sh "NAM|CA|ON|TORONTO"} \
+# Sound ------------------------------------------------------------------------
+${if_match ${execi 1 ~/scripts/sound.sh} != 0}\
+^i(confs/xbm8x8/spkr_01.xbm) ^fg(lightgray)${execi 1 ~/scripts/sound.sh}^fg() \
+${else}\
+^i(confs/xbm8x8/spkr_02.xbm) ^fg(red)Mute^fg() \
+${endif}
