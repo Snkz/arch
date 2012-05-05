@@ -20,12 +20,15 @@
 import XMonad 
 
 import XMonad.Actions.CycleWS
+import XMonad.Actions.MouseGestures
+import XMonad.Actions.GridSelect
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.FadeInactive
 import XMonad.ManageHook
 
 import XMonad.Util.Loggers
@@ -38,6 +41,14 @@ import XMonad.Prompt.Shell
 import XMonad.Prompt.Man
 
 import XMonad.Layout.NoBorders 
+import XMonad.Layout.Spacing
+import XMonad.Layout.Named
+import XMonad.Layout.Spiral
+import XMonad.Layout.Accordion 
+import XMonad.Layout.Mosaic 
+import XMonad.Layout.ToggleLayouts
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Tabbed 
 
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
@@ -46,17 +57,22 @@ main = do
 	-- spawn first dzen bar, displays default dzen stuff
 	statusbar <- spawnPipe (workbar)
 	spawn (conkybar)
-	spawn (extrabar)
+	spawn (scroller)
+	spawn (secondstatus)
+	--spawn (bbar)
 	-- override the following xmonad settings and run. Use the specified urgency hook.
-	xmonad $ myUrgencyHook  $ defaultConfig 
+    -- layoutHook    = avoidStruts $ myLayout 
+    -- layoutHook    =  smartBorders $ avoidStruts $ layoutHook defaultConfig 
+    -- $ myUrgencyHook  
+	xmonad $ defaultConfig 
 		{ borderWidth   = 3 
+        , layoutHook    = avoidStruts $ myLayout 
 		, workspaces    = ["main", "web", "code", "ssh", "game"] ++ map show [6..9]
 		, startupHook   = setWMName "LG3D"
-		, layoutHook    = smartBorders $ avoidStruts $ layoutHook defaultConfig
 		, manageHook    = manageDocks <+> myManageHook <+> manageHook defaultConfig 
 						  -- Did not fix mtpaint <+> (fmap not isDialog --> doF avoidMaster)
 						  -- Did not fix mtpaint <+> (isDialog --> doF W.shiftMaster <+> doF W.swapDown)
-		, logHook       = dynamicLogWithPP $ myPPsettings statusbar
+		, logHook       = (dynamicLogWithPP $ myPPsettings statusbar) -- >> (fadeLogHook)
 		} `additionalKeysP` myKeys
 		
 
@@ -66,7 +82,8 @@ myKeys = [
 	  ("M-f", spawn "firefox")
 	, ("M-p", shellPrompt myXPConfig) 
 	, ("M-m", spawn "./scripts/minecraft.sh")
-	, ("M-c", spawn "conky")
+	, ("M-c", spawn "chromium")
+	, ("M-S-c", spawn "conky")
 	-- Close focused program
 	, ("M-S-k", kill)
 	-- Screenies
@@ -76,8 +93,8 @@ myKeys = [
 	-- Restart xmonad
 	, ("M-q", spawn "killall conky; xmonad --recompile; xmonad --restart")
 	-- Audio Control 
-	, ("<XF86AudioLowerVolume>", spawn "amixer -q set Master 1- unmute")
-	, ("<XF86AudioRaiseVolume>", spawn "amixer -q set Master 1+ unmute")
+	, ("<XF86AudioLowerVolume>", spawn "amixer -q set Master 3%- unmute")
+	, ("<XF86AudioRaiseVolume>", spawn "amixer -q set Master 3%+ unmute")
 	, ("<XF86AudioMute>", spawn "amixer -q set Master toggle")
 	-- Workspace control
 	, ("M-<Left>",   prevWS)
@@ -86,44 +103,88 @@ myKeys = [
 	, ("M-S-<Left>",   shiftToPrev)
 	, ("M-S-<Right>",  shiftToNext)
 	, ("M-S-z",    moveTo Next EmptyWS)
+    -- Grid Controls
+	, ("M-g", goToSelected defaultGSConfig)
 	]
 
 -- The regular status bar
-workbar = "dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -ta l -w 700 -h 20"
+workbar = "dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -ta l -w 1000 -h 20"
+
+-- Icons, not in use
+arch    = "^bg()^fg(blue)^i(confs/xbm8x8/arch_10x10.xbm)"
+firefox = "^bg(black)^fg(red)^p(+10)^i(confs/xbm8x8/fox.xbm) Fire ^p(+62)"
+info    = "^bg(black)^fg(yellow)^p(+10)^i(confs/xbm8x8/info_01.xbm) Info ^p(+62)"
+power   = "^bg(black)^fg(white)^p(+10)^i(confs/xbm8x8/half.xbm) Power ^p(+62)"
 
 -- Conky stats
-conkybar = "conky -c './scripts/conky_statsrc' | dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -ta r -x 700 -w 570 -h 20"
-extrabar = "conky -c './scripts/conky_namescrollrc' | dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -ta r -x 1270 -w 96 -h 20"
+conkybar = "conky -c './scripts/conky_statsrc' | dzen2  -p -fn '" ++ terminus ++ "' -bg black -fg white -ta r -x 1000 -w 366 -h 20"
+-- Useless Welcome thingy
+scroller = "echo \"^fg(white)Welcome to ^fg(lightblue)Skyloft^fg()\" | dzen2  -p -fn '" ++ terminus ++ "' -bg black -x 80 -y 748 -ta r -w 654 -h 20"
+-- Bottom status stuff
+secondstatus = "conky -c './scripts/conky_weather' | dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -x 734 -y 748 -ta r -w 632 -h 20"
 
 -- How dzen bar will appear 
 myPPsettings bar = defaultPP
 				{ ppCurrent            = dzenColor "#FFFFFF" "#000000" . wrap ">" ""
 				, ppOutput             = hPutStrLn bar
-				, ppVisible            = dzenColor "#000000" "#FFFFFF"
-				, ppHidden             = dzenColor "#FFFFFF" ""
-				, ppHiddenNoWindows    = dzenColor "#4A4459" ""
+				, ppVisible            = dzenColor "#000000" "#FFFFFF" . wrap "^i(confs/xbm8x8/full,xbm)" ""
+				, ppHidden             = dzenColor "#FFFFFF" ""  . wrap "^i(confs/xbm8x8/full,xbm)" ""
+				, ppHiddenNoWindows    = dzenColor "#4A4459" ""  . wrap "^i(confs/xbm8x8/empty,xbm)" ""
 				, ppSep                = " ^fg(grey60) = ^fg() "
 				, ppWsSep              = " "
 				, ppUrgent             = dzenColor "yellow" "red" . dzenStrip
 				--, ppTitle              = dzenColor "#FFFFFF" "" . wrap ":: " " ::"
 				, ppTitle              = dzenColor "#FFFFFF" "" 
 				, ppLayout             = dzenColor "#FFFFF" "" . (\mode -> case mode of
-																		"Tall" -> "|[]"
-																		"Mirror Tall" -> "[_]"
-																		"Full" -> "[-]")
+																		"Tiled" -> "|[]"
+																		"Mirror Tiled" -> "[_]"
+																		"Full" -> "[-]"
+																		"Tab" -> "[=]"
+																		"Spiral" -> "[@]"
+																		"Accordion" -> "[#]"
+																		"Mosaic" -> "[+]"
+																		_ -> "[?]" )
 				}
+
+
+-- Layout hook of awesome, found on xmonad wiki mostly with a few tweaks 
+myLayout = full ||| tiled ||| Mirror tiled ||| spiraly
+--myLayout = Full ||| mos ||| acc ||| tiled ||| tabs ||| Mirror tiled ||| spiraly
+    where 
+        -- default lol
+        nmaster = 1
+        -- lol props golden bro
+        ratio = (2 / (1 + (toRational(sqrt(5)::Double))))
+        -- percent of screen to increment and shit
+        delta = 5/100
+        -- something about partitioning 
+        tiled = named "Tiled" $ spacing 4 $ Tall nmaster delta ratio
+        -- the coolest one ever
+        spiraly = named "Spiral" $ spacing 1 $ avoidStrutsOn [U] (spiral (6/7))
+        -- TABS BRAH 
+        tabs = named "Tab" $ simpleTabbed
+        -- Accordian BRO
+        acc = named "Accordion" $ Mirror Accordion
+        -- MOSI B
+        mos = named "Mosaic" $ mosaic 3 [4,1] 
+        -- regular old full
+        full = smartBorders $ Full
+
+-- Fading bro, found online
+fadeLogHook = fadeInactiveLogHook 1
 
 -- layout for specified programs.
 myManageHook = composeAll [ 
 			   (className =? "mtpaint" --> doFloat) 
-			 , (isFullscreen --> (doF W.focusDown <+> doFullFloat)) 
+			 , (isFullscreen --> (doF W.focusDown <+> doFullFloat))
+             , (className =? "info" --> doFloat) 
 			 ]
 
 -- what xmonad will do when a window calls for my attention
-myUrgencyHook = withUrgencyHook dzenUrgencyHook 
-				{ args = [ "-fn", "smoothansi-10"
-						 , "-bg", "yellow"] 
-				} 
+-- myUrgencyHook = withUrgencyHook dzenUrgencyHook 
+--				{ args = [ "-fn", "smoothansi-10"
+--						 , "-bg", "yellow"] 
+--				} 
 				 
 -- oh pretty terminus 
 terminus = "-*-terminus-*-*-*-*-12-*-*-*-*-*-iso8859-*"
