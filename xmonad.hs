@@ -21,6 +21,7 @@ import XMonad
 
 import XMonad.Actions.CycleWS
 import XMonad.Actions.MouseGestures
+import XMonad.Actions.MouseResize
 import XMonad.Actions.GridSelect
 
 import XMonad.Hooks.DynamicLog
@@ -40,6 +41,7 @@ import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Man
 
+import XMonad.Layout.WindowArranger 
 import XMonad.Layout.NoBorders 
 import XMonad.Layout.Spacing
 import XMonad.Layout.Named
@@ -59,6 +61,7 @@ main = do
 	spawn (conkybar)
 	spawn (scroller)
 	spawn (secondstatus)
+	spawn ("./scripts/menu.sh")
 	--spawn (bbar)
 	-- override the following xmonad settings and run. Use the specified urgency hook.
     -- layoutHook    = avoidStruts $ myLayout 
@@ -66,13 +69,13 @@ main = do
     -- $ myUrgencyHook  
 	xmonad $ defaultConfig 
 		{ borderWidth   = 3 
-        , layoutHook    = avoidStruts $ myLayout 
+        , layoutHook    = avoidStruts $ mouseResize $ windowArrange $ myLayout 
 		, workspaces    = ["main", "web", "code", "ssh", "game"] ++ map show [6..9]
 		, startupHook   = setWMName "LG3D"
 		, manageHook    = manageDocks <+> myManageHook <+> manageHook defaultConfig 
 						  -- Did not fix mtpaint <+> (fmap not isDialog --> doF avoidMaster)
 						  -- Did not fix mtpaint <+> (isDialog --> doF W.shiftMaster <+> doF W.swapDown)
-		, logHook       = (dynamicLogWithPP $ myPPsettings statusbar) -- >> (fadeLogHook)
+		, logHook       = (dynamicLogWithPP $ myPPsettings statusbar) >> (fadeLogHook)
 		} `additionalKeysP` myKeys
 		
 
@@ -90,8 +93,10 @@ myKeys = [
 	, ("<Print>", spawn "scrot -q 100 -e 'mv $f ~/images/screenshot'")
 	-- Return to tilespace
 	, ("M-S-t", withFocused $ windows . W.sink)
+	-- Lock Screen
+	, ("M-S-l", spawn "slock")
 	-- Restart xmonad
-	, ("M-q", spawn "killall conky; xmonad --recompile; xmonad --restart")
+	, ("M-q", spawn "killall conky; killall dzen2; xmonad --recompile; xmonad --restart")
 	-- Audio Control 
 	, ("<XF86AudioLowerVolume>", spawn "amixer -q set Master 3%- unmute")
 	, ("<XF86AudioRaiseVolume>", spawn "amixer -q set Master 3%+ unmute")
@@ -122,6 +127,7 @@ conkybar = "conky -c './scripts/conky_statsrc' | dzen2  -p -fn '" ++ terminus ++
 scroller = "echo \"^fg(white)Welcome to ^fg(lightblue)Skyloft^fg()\" | dzen2  -p -fn '" ++ terminus ++ "' -bg black -x 80 -y 748 -ta r -w 654 -h 20"
 -- Bottom status stuff
 secondstatus = "conky -c './scripts/conky_weather' | dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -x 734 -y 748 -ta r -w 632 -h 20"
+
 
 -- How dzen bar will appear 
 myPPsettings bar = defaultPP
@@ -171,7 +177,7 @@ myLayout = full ||| tiled ||| Mirror tiled ||| spiraly
         full = smartBorders $ Full
 
 -- Fading bro, found online
-fadeLogHook = fadeInactiveLogHook 1
+fadeLogHook = fadeInactiveLogHook 0.8
 
 -- layout for specified programs.
 myManageHook = composeAll [ 

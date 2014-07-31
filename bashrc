@@ -30,20 +30,26 @@ alias home="cd ~; pwd"
 alias work="cd ~/work; pwd"
 alias school="cd ~/school; pwd"
 alias scripts="cd ~/scripts; pwd"
+alias 469="cd ~/school/csc469; pwd"
+alias 418="cd ~/school/csc418; pwd"
+alias 458="cd ~/school/csc458; pwd"
 
 # Networks ---------------------------------------------------------------------
-alias homewifi="sudo netcfg home"
-alias dhomewifi="sudo netcfg down home"
-alias cswifi="sudo netcfg cslab"
-alias dcswifi="sudo netcfg down cslab"
-alias cslab="ssh g1snkz-cdf@wifi.cs.toronto.edu"
-alias utorwifi="sudo netcfg utor"
-alias dutorwifi="sudo netcfg down utor"
-alias natashawifi="sudo netcfg natasha"
-alias dnatashawifi="sudo netcfg down natasha"
+alias homewifi="sudo netctl start wlan0-Fiino"
+alias dhomewifi="sudo netctl stop wlan0-Fiino"
+alias uoftwifi="sudo netctl start UofT"
+alias duoftwifi="sudo netctl stop UofT"
+#alias cslab="ssh g1snkz-cdf@wifi.cs.toronto.edu"
+alias utorwifi="sudo netctl start utor"
+alias dutorwifi="sudo netctl stop utor"
+alias negarwifi="sudo netctl start Negar"
+alias dnegarwifi="sudo netctl stop Negar"
+alias kevinwifi="sudo netctl start wlan0-Ramo"
+alias dkevinwifi="sudo netctl stop wlan0-Ramo"
 
 # Sudo-ing things --------------------------------------------------------------
-alias pacman="sudo pacman-color" 
+# sorry buddy :( alias pacman="sudo pacman-color" 
+alias pacman="sudo pacman" 
 alias reboot="sudo reboot"
 alias svim="sudo vim"
 alias scat="sudo cat"
@@ -62,6 +68,10 @@ alias fm="pcmanfm"
 alias unmount="sudo umount"
 alias mount="sudo mount"
 alias sshcdf="ssh g1snkz@cdf.toronto.edu"
+alias sshcluster="ssh -i ~/.ssh/uskyloft adahir@fs.csl.utoronto.ca"
+alias sshrserver="ssh -f -N -L 8787:c159:8787 -i ~/.ssh/uskyloft adahir@fs.csl.utoronto.ca"
+alias scpcdf="scp g1snkz@cdf.toronto.edu:$1 $2"
+alias scpcluster="scp -i ~/.ssh/uskyloft adahir@fs.csl.utoronto.ca:$1 $2"
 
 # Pretty key -------------------------------------------------------------------
 alias arch="archey3" 
@@ -76,4 +86,8 @@ export LESS="-R"
 export EDITOR="vim"
 
 # Transparent terminal! requires X to be up and xcompmgr -----------------------
-[ -n "$WINDOWID" ] && transset-df -i $WINDOWID >/dev/null
+#[ -n "$WINDOWID" ] && transset-df -i $WINDOWID >/dev/null
+
+#1337
+#alias dpkg="dpkg -i --ignore--depends=libasound2,libqt4-opengl,libqrcore4,libqtgui4" 
+export LD_LIBRARY_PATH=/opt/softkinetic/DepthSenseSDK/lib/

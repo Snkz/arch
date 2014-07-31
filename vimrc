@@ -12,8 +12,12 @@ set smartindent
 set tabstop=4
 set shiftwidth=4
 set expandtab
-set mouse=a
-set backupdir=~/tmp
+set number
+set backupdir=/home/snkz/.tmp
+set whichwrap=b,s,<,>,[,]
+"color jellybeans
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.\+/
 
 " All system-wide defaults are set in $VIMRUNTIME/archlinux.vim (usually just
 " /usr/share/vim/vimfiles/archlinux.vim) and sourced by the call to :runtime
@@ -67,7 +71,7 @@ inoremap <C-U> <C-G>u<C-U>
 
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
-  set mouse=r
+  set mouse=a
 endif
 
 " Switch syntax highlighting on, when the terminal has colors
