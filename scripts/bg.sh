@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 
 INTERVAL=30
-DIR="images/bgs"
+DIR="images/bgs/high"
 while true; do
 	for WALLPAPER in `ls $DIR`
 	do

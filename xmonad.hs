@@ -67,10 +67,10 @@ main = do
     -- layoutHook    = avoidStruts $ myLayout 
     -- layoutHook    =  smartBorders $ avoidStruts $ layoutHook defaultConfig 
     -- $ myUrgencyHook  
-	xmonad $ defaultConfig 
+	xmonad $ withUrgencyHook NoUrgencyHook defaultConfig 
 		{ borderWidth   = 3 
         , layoutHook    = avoidStruts $ mouseResize $ windowArrange $ myLayout 
-		, workspaces    = ["main", "web", "code", "ssh", "game"] ++ map show [6..9]
+		, workspaces    = ["main", "web", "code", "ssh"] ++ map show [5..8] ++ ["irc"]
 		, startupHook   = setWMName "LG3D"
 		, manageHook    = manageDocks <+> myManageHook <+> manageHook defaultConfig 
 						  -- Did not fix mtpaint <+> (fmap not isDialog --> doF avoidMaster)
@@ -87,6 +87,10 @@ myKeys = [
 	, ("M-m", spawn "./scripts/minecraft.sh")
 	, ("M-c", spawn "chromium")
 	, ("M-S-c", spawn "conky")
+	, ("M-S-i", spawn "xterm -title irssi -name irssi -e irssi")
+	, ("M-i", spawn "irssi")
+    -- Fontsize control
+	--, ("M-S-8", spawn "xtermcontrol --font terminus:pixelsize=18")
 	-- Close focused program
 	, ("M-S-k", kill)
 	-- Screenies
@@ -96,7 +100,9 @@ myKeys = [
 	-- Lock Screen
 	, ("M-S-l", spawn "slock")
 	-- Restart xmonad
-	, ("M-q", spawn "killall conky; killall dzen2; xmonad --recompile; xmonad --restart")
+	, ("M-q", spawn "killall conky; killall xargs; killall dzen2; xmonad --recompile; xmonad --restart")
+	-- Kill X
+	, ("M-S-x", spawn "killall conky; killall xargs; killall dzen2; killall xinit;")
 	-- Audio Control 
 	, ("<XF86AudioLowerVolume>", spawn "amixer -q set Master 3%- unmute")
 	, ("<XF86AudioRaiseVolume>", spawn "amixer -q set Master 3%+ unmute")
@@ -113,7 +119,7 @@ myKeys = [
 	]
 
 -- The regular status bar
-workbar = "dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -ta l -w 1000 -h 20"
+workbar = "dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -ta l -w 1000 -h 24"
 
 -- Icons, not in use
 arch    = "^bg()^fg(blue)^i(confs/xbm8x8/arch_10x10.xbm)"
@@ -122,11 +128,11 @@ info    = "^bg(black)^fg(yellow)^p(+10)^i(confs/xbm8x8/info_01.xbm) Info ^p(+62)
 power   = "^bg(black)^fg(white)^p(+10)^i(confs/xbm8x8/half.xbm) Power ^p(+62)"
 
 -- Conky stats
-conkybar = "conky -c './scripts/conky_statsrc' | dzen2  -p -fn '" ++ terminus ++ "' -bg black -fg white -ta r -x 1000 -w 366 -h 20"
+conkybar = "conky -c './scripts/conky_statsrc' | dzen2  -p -fn '" ++ terminus ++ "' -bg black -fg white -ta r -x 1000 -w 1880 -h 24"
 -- Useless Welcome thingy
-scroller = "echo \"^fg(white)Welcome to ^fg(lightblue)Skyloft^fg()\" | dzen2  -p -fn '" ++ terminus ++ "' -bg black -x 80 -y 748 -ta r -w 654 -h 20"
+scroller = "echo \"^fg(white)Welcome to ^fg(lightblue)Skyloft^fg()\" | dzen2  -p -fn '" ++ terminus ++ "' -bg black -x 80 -y $((`xrandr --current | grep '*' | awk '{print $1}' | cut -d 'x' -f2` - 24)) -ta r -w 1920 -h 24 & transset .9";
 -- Bottom status stuff
-secondstatus = "conky -c './scripts/conky_weather' | dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -x 734 -y 748 -ta r -w 632 -h 20"
+secondstatus = "conky -c './scripts/conky_weather' | dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -x 2000 -y $((`xrandr --current | grep '*' | awk '{print $1}' | cut -d 'x' -f2` - 24)) -ta r -w 880 -h 24"
 
 
 -- How dzen bar will appear 
@@ -138,7 +144,7 @@ myPPsettings bar = defaultPP
 				, ppHiddenNoWindows    = dzenColor "#4A4459" ""  . wrap "^i(confs/xbm8x8/empty,xbm)" ""
 				, ppSep                = " ^fg(grey60) = ^fg() "
 				, ppWsSep              = " "
-				, ppUrgent             = dzenColor "yellow" "red" . dzenStrip
+				, ppUrgent             = dzenColor "yellow" "black" . dzenStrip
 				--, ppTitle              = dzenColor "#FFFFFF" "" . wrap ":: " " ::"
 				, ppTitle              = dzenColor "#FFFFFF" "" 
 				, ppLayout             = dzenColor "#FFFFF" "" . (\mode -> case mode of
@@ -177,14 +183,15 @@ myLayout = full ||| tiled ||| Mirror tiled ||| spiraly
         full = smartBorders $ Full
 
 -- Fading bro, found online
-fadeLogHook = fadeInactiveLogHook 0.8
+fadeLogHook = fadeInactiveLogHook 0.9
 
 -- layout for specified programs.
-myManageHook = composeAll [ 
-			   (className =? "mtpaint" --> doFloat) 
-			 , (isFullscreen --> (doF W.focusDown <+> doFullFloat))
-             , (className =? "info" --> doFloat) 
-			 ]
+myManageHook = composeAll 
+            [ className =? "mtpaint" --> doFloat 
+            , isFullscreen --> (doF W.focusDown <+> doFullFloat)
+            , className =? "info" --> doFloat
+            , appName =? "irssi" --> doShift "irc"
+			]
 
 -- what xmonad will do when a window calls for my attention
 -- myUrgencyHook = withUrgencyHook dzenUrgencyHook 
@@ -193,7 +200,7 @@ myManageHook = composeAll [
 --				} 
 				 
 -- oh pretty terminus 
-terminus = "-*-terminus-*-*-*-*-12-*-*-*-*-*-iso8859-*"
+terminus = "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso8859-*"
 
 -- New windows will never be put on the master window! 
 -- I swear this is how the param'd it, I can't rename things I dont know!!
@@ -207,7 +214,7 @@ myXPConfig = defaultXPConfig
 	{ position = Bottom
 	, promptBorderWidth = 0 
 	--, borderColor = "grey"
-	, height = 20  
+	, height = 24  
 	, bgColor = "black"
 	, fgColor = "gray"
 	, fgHLight = "white"

@@ -9,7 +9,7 @@
 
 
 background yes
-xftfont terminus:size=12
+xftfont terminus:size=16
 gap_y -1024
 double_buffer yes
 out_to_console yes
