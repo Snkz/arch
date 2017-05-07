@@ -10,4 +10,4 @@
 
 ICON="^i(confs/xbm8x8/arch.xbm)"
 FONT="-*-terminus-*-*-*-*-16-*-*-*-*-*-iso8859-*"
-  echo $ICON | dzen2 -p -x 0 -y 932 -w 200 -ta l -fn $FONT -bg black -fg white 
+  echo $ICON | dzen2 -dock -p -x 0 -y 932 -w 200 -ta l -fn $FONT -bg black -fg white 

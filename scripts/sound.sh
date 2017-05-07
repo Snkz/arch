@@ -8,9 +8,9 @@
 # Script to get sound for conky using amixer and a mono master speaker 
 #-------------------------------------------------------------------------------
 
-channel="Left:"
-vol=`amixer get Master | grep $channel | awk '{print $5}'`
-mute=`amixer get Master | grep $channel | awk '{print $7}'`
+channel="Mono:"
+vol=`amixer get Master | grep $channel | awk '{print $4}'`
+mute=`amixer get Master | grep $channel | awk '{print $6}'`
 if [ $vol == "[0%]" ] || [ $mute == "[off]" ]
 then
 	echo "0"

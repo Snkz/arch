@@ -19,8 +19,6 @@
 
 import XMonad 
 
-import XMonad.Config.Desktop
-
 import XMonad.Actions.CycleWS
 import XMonad.Actions.MouseGestures
 import XMonad.Actions.MouseResize
@@ -58,30 +56,28 @@ import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
 main = do 
-  -- spawn first dzen bar, displays default dzen stuff
+	-- spawn first dzen bar, displays default dzen stuff
 	statusbar <- spawnPipe (workbar)
 	spawn (conkybar)
 	spawn (scroller)
 	spawn (secondstatus)
-	--spawn ("./scripts/menu.sh")
+	spawn ("./scripts/menu.sh")
 	--spawn (bbar)
-	
-    -- override the following xmonad settings and run. Use the specified urgency hook.
+	-- override the following xmonad settings and run. Use the specified urgency hook.
     -- layoutHook    = avoidStruts $ myLayout 
     -- layoutHook    =  smartBorders $ avoidStruts $ layoutHook defaultConfig 
     -- $ myUrgencyHook  
-	xmonad $ withUrgencyHook NoUrgencyHook desktopConfig
-		{ borderWidth       = 3 
-    , handleEventHook   = docksEventHook <+> handleEventHook desktopConfig 
-    , layoutHook        = avoidStruts $ mouseResize $ windowArrange myLayout
-		, workspaces        = ["main", "web", "code", "ssh"] ++ map show [5..7] ++ ["mcabber", "irc"]
-		, startupHook       = setWMName "LG3D" <+> docksStartupHook
-		, manageHook        = manageDocks <+> myManageHook <+> manageHook desktopConfig
+	xmonad $ withUrgencyHook NoUrgencyHook defaultConfig 
+		{ borderWidth   = 3 
+        , layoutHook    = avoidStruts $ mouseResize $ windowArrange $ myLayout 
+		, workspaces    = ["main", "web", "code", "ssh"] ++ map show [5..7] ++ ["mcabber", "irc"]
+		, startupHook   = setWMName "LG3D"
+		, manageHook    = manageDocks <+> myManageHook <+> manageHook defaultConfig 
 						  -- Did not fix mtpaint <+> (fmap not isDialog --> doF avoidMaster)
 						  -- Did not fix mtpaint <+> (isDialog --> doF W.shiftMaster <+> doF W.swapDown)
-		, logHook           = (dynamicLogWithPP $ myPPsettings statusbar) >> (fadeLogHook)
+		, logHook       = (dynamicLogWithPP $ myPPsettings statusbar) >> (fadeLogHook)
 		} `additionalKeysP` myKeys
-
+		
 
 -- Format: [... ("key bind", functionality) ...]
 myKeys = [
@@ -111,23 +107,19 @@ myKeys = [
 	, ("<XF86AudioLowerVolume>", spawn "amixer -q set Master 3%- unmute")
 	, ("<XF86AudioRaiseVolume>", spawn "amixer -q set Master 3%+ unmute")
 	, ("<XF86AudioMute>", spawn "amixer -q set Master toggle")
-    -- Brightness
-	, ("M-S-<Up>", spawn "xbacklight -inc 5")
-	, ("M-S-<Down>", spawn "xbacklight -dec 5")
 	-- Workspace control
 	, ("M-<Left>",   prevWS)
 	, ("M-<Right>",  nextWS)
 	, ("M-z",    toggleWS)
-	, ("M-b",    sendMessage ToggleStruts)
 	, ("M-S-<Left>",   shiftToPrev)
 	, ("M-S-<Right>",  shiftToNext)
 	, ("M-S-z",    moveTo Next EmptyWS)
     -- Grid Controls
-	, ("M-g", goToSelected def)
+	, ("M-g", goToSelected defaultGSConfig)
 	]
 
 -- The regular status bar
-workbar = "dzen2 -dock -fn '" ++ terminus ++ "' -xs 1 -bg black -fg white -ta l -w 1000 -h 24"
+workbar = "dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -ta l -w 1000 -h 24"
 
 -- Icons, not in use
 arch    = "^bg()^fg(blue)^i(confs/xbm8x8/arch_10x10.xbm)"
@@ -136,15 +128,15 @@ info    = "^bg(black)^fg(yellow)^p(+10)^i(confs/xbm8x8/info_01.xbm) Info ^p(+62)
 power   = "^bg(black)^fg(white)^p(+10)^i(confs/xbm8x8/half.xbm) Power ^p(+62)"
 
 -- Conky stats
-conkybar = "conky -c './scripts/conky_statsrc' | dzen2 -dock -xs 1 -p -fn '" ++ terminus ++ "' -bg black -fg white -ta r -x 1000 -w 1880 -h 24"
+conkybar = "conky -c './scripts/conky_statsrc' | dzen2  -p -fn '" ++ terminus ++ "' -bg black -fg white -ta r -x 1000 -w 1880 -h 24"
 -- Useless Welcome thingy
-scroller = "echo \"^fg(white)Welcome to ^fg(lightblue)Skyloft^fg()\" | dzen2 -dock -xs 1 -p -fn '" ++ terminus ++ "' -bg black -x 80 -y $((`xrandr --current | grep '*' | awk 'NR==1{print $1}' | cut -d 'x' -f2` - 24)) -ta r -w 970 -h 24 & transset .9";
+scroller = "echo \"^fg(white)Welcome to ^fg(lightblue)Skyloft^fg()\" | dzen2  -p -fn '" ++ terminus ++ "' -bg black -x 80 -y $((`xrandr --current | grep '*' | awk '{print $1}' | cut -d 'x' -f2` - 24)) -ta r -w 970 -h 24 & transset .9";
 -- Bottom status stuff
-secondstatus = "conky -c './scripts/conky_weather' | dzen2 -dock -xs 1 -fn '" ++ terminus ++ "' -bg black -fg white -x 1050 -y $((`xrandr --current | grep '*' | awk 'NR==1{print $1}' | cut -d 'x' -f2` - 24)) -ta r -w 1870 -h 24"
+secondstatus = "conky -c './scripts/conky_weather' | dzen2  -fn '" ++ terminus ++ "' -bg black -fg white -x 1050 -y $((`xrandr --current | grep '*' | awk '{print $1}' | cut -d 'x' -f2` - 24)) -ta r -w 1870 -h 24"
 
 
 -- How dzen bar will appear 
-myPPsettings bar = def
+myPPsettings bar = defaultPP
 				{ ppCurrent            = dzenColor "#FFFFFF" "#000000" . wrap ">" ""
 				, ppOutput             = hPutStrLn bar
 				, ppVisible            = dzenColor "#000000" "#FFFFFF" . wrap "^i(confs/xbm8x8/full,xbm)" ""
@@ -168,7 +160,7 @@ myPPsettings bar = def
 
 
 -- Layout hook of awesome, found on xmonad wiki mostly with a few tweaks 
-myLayout = avoidStruts (full ||| tiled ||| Mirror tiled ||| spiraly)
+myLayout = full ||| tiled ||| Mirror tiled ||| spiraly ||| mos
 --myLayout = Full ||| mos ||| acc ||| tiled ||| tabs ||| Mirror tiled ||| spiraly
     where 
         -- default lol
@@ -186,7 +178,7 @@ myLayout = avoidStruts (full ||| tiled ||| Mirror tiled ||| spiraly)
         -- Accordian BRO
         acc = named "Accordion" $ Mirror Accordion
         -- MOSI B
-        mos = named "Mosaic" $ mosaic 3 [4,1] 
+        mos = named "Mosaic" $ Mosaic 3 [4,1] 
         -- regular old full
         full = smartBorders $ Full
 
@@ -209,8 +201,7 @@ myManageHook = composeAll
 --				} 
 				 
 -- oh pretty terminus 
--- terminus = "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso8859-*"
-terminus = "xos4 Terminus:pixelsize=16"
+terminus = "-*-terminus-*-*-*-*-16-*-*-*-*-*-iso8859-*"
 
 -- New windows will never be put on the master window! 
 -- I swear this is how the param'd it, I can't rename things I dont know!!
@@ -220,7 +211,7 @@ avoidMaster = W.modify' $ (\c -> case c of
 						   otherwise 		   -> c)
 
 -- Settings for the terminal thinng below , shows all avalible shell commands
-myXPConfig = def
+myXPConfig = defaultXPConfig 
 	{ position = Bottom
 	, promptBorderWidth = 0 
 	--, borderColor = "grey"

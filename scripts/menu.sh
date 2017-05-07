@@ -25,8 +25,9 @@ if [ -n "$1" ]; then
     exit
 fi
 
-height=$((`xrandr --current | grep '*' | awk '{print $1}' | cut -d 'x' -f2` - 20))
-width=$(xrandr --current | grep '*' | awk '{print $1}' | cut -d 'x' -f1)
+monitor=1;
+height=$((`xrandr --current | grep 'eDP1' | awk "NR==1{print $1}" | cut -d 'x' -f2` - 20))
+width=$(xrandr --current | grep 'eDP1' | awk "NR==1{print $1}" | cut -d 'x' -f1)
 # Menu
 arch="^bg()^fg(blue)^i(confs/xbm8x8/arch_10x10.xbm)"
 chrome="^ib(1)^bg()^fg(blue)^p(+10)^i(confs/xbm8x8/fs_01.xbm) Chrome ^p(+62)"
@@ -38,6 +39,8 @@ terminus="-*-terminus-*-*-*-*-16-*-*-*-*-*-iso8859-*"
 dzen="dzen2 -fn $terminus -x 0 -y $height -w 80 -h 24 -l 4 -m -p"
 #events="-e onstart=grabkeys;button1=menuprint,collapse,ungrabkeys;entertitle=uncollapse,grabmouse;leaveslave=collapse,ungrabmouse,ungrabkeys;button3=exit;key_Super_L=togglecollapse;"
 events="-e button1=ungrabmouse,menuprint,collapse;entertitle=uncollapse,grabmouse;leaveslave=collapse,ungrabmouse;button3=exit;"
-(echo "$arch"; echo -e "$chrome\n$home\n$info\n$power") \
-    | $dzen $events | xargs -n1 $0
+#(echo "$arch"; echo -e "$chrome\n$home\n$info\n$power") \
+#    | $dzen $events | xargs -n1 $0
 
+echo "$arch"; echo -e "$chrome\n$home\n$info\n$power") \
+   | $dzen $events

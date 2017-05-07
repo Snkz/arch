@@ -23,19 +23,19 @@ userspacer none
 
 TEXT
 # Network Connection -----------------------------------------------------------
-${if_match ${wireless_link_qual_perc wlan0} < 10}\
-^fg(red)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlan0}^fg() \
+${if_match ${wireless_link_qual_perc wlp1s0} < 10}\
+^fg(red)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
 ${else}\
-${if_match ${wireless_link_qual_perc wlan0} < 40}\
-^fg(orange)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlan0}^fg() \
+${if_match ${wireless_link_qual_perc wlp1s0} < 40}\
+^fg(orange)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
 ${else}\
-${if_match ${wireless_link_qual_perc wlan0} < 70}\
-^fg(yellow)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlan0}^fg() \
+${if_match ${wireless_link_qual_perc wlp1s0} < 70}\
+^fg(yellow)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
 ${else}\
-${if_match ${wireless_link_qual_perc wlan0} < 101}\
-^fg(green)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlan0}^fg() \
+${if_match ${wireless_link_qual_perc wlp1s0} < 101}\
+^fg(green)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
 ${else}\
-^fg(red)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlan0}^fg() \
+^fg(red)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
 ${endif}\
 ${endif}\
 ${endif}\

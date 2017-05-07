@@ -8,16 +8,18 @@
 " Most of these settings were Inspired by online resources, mostly arch wiki 
 "-------------------------------------------------------------------------------
 
-set smartindent
-set tabstop=4
-set shiftwidth=4
+"set smartindent
+set tabstop=2
+set shiftwidth=2
 set expandtab
 set number
 set backupdir=/home/snkz/.tmp
 set whichwrap=b,s,<,>,[,]
-"color jellybeans
+color jellybeans
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
+au BufNewFile,BufRead *.frag,*.vert,*.fp,*.vp,*.glsl setf glsl 
+au BufNewFile,BufRead *.behaviour setf json 
 
 " All system-wide defaults are set in $VIMRUNTIME/archlinux.vim (usually just
 " /usr/share/vim/vimfiles/archlinux.vim) and sourced by the call to :runtime
