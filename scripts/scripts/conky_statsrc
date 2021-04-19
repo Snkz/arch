@@ -1,0 +1,87 @@
+--[[
+#-------------------------------------------------------------------------------
+# file:            /scripts/conky_statsrc                                              
+# author:          Abdi Dahir - I have no website :(                           
+# modified:        Feburary 2012                                               
+# vim: set fenc=utf-8:nu:ai:si:et:ts=4:sw=4:                      
+#                                                                             
+# Conky settings, displays stuff. Pump it to bar. s'all good.
+# Various settings
+#-------------------------------------------------------------------------------
+]]
+
+
+conky.config = {
+  background = true,
+  font = 'terminus:size=16',
+  gap_y = -1024,
+  double_buffer = true,
+  out_to_console = true,
+  out_to_x = false,
+  own_window = true,
+  own_window_type = 'desktop',
+  update_interval = 1,
+  total_run_tomes = 0,
+  userspacer = 'none',
+}
+
+conky.text = [[
+# Network Connection -----------------------------------------------------------
+${if_match ${wireless_link_qual_perc wlp1s0} < 10}\
+^fg(red)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
+${else}\
+${if_match ${wireless_link_qual_perc wlp1s0} < 40}\
+^fg(orange)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
+${else}\
+${if_match ${wireless_link_qual_perc wlp1s0} < 70}\
+^fg(yellow)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
+${else}\
+${if_match ${wireless_link_qual_perc wlp1s0} < 101}\
+^fg(green)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
+${else}\
+^fg(red)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
+${endif}\
+${endif}\
+${endif}\
+${endif}\
+# CPU usage --------------------------------------------------------------------
+#^i(confs/xbm8x8/cpu.xbm) $cpu% \
+# Memory usage -----------------------------------------------------------------
+#^i(confs/xbm8x8/mem.xbm) $memperc% \
+# GPU usage --------------------------------------------------------------------
+#${if_match ${execi 60 nvidia-settings -t -q gpucoretemp} < 50}\
+#^i(confs/xbm8x8/temp.xbm) ^fg(lightblue)${execi 60 nvidia-settings -t -q gpucoretemp}°C^fg() \
+#${else}\
+#${if_match ${execi 60 nvidia-settings -t -q gpucoretemp} < 70}\
+#^i(confs/xbm8x8/temp.xbm) ^fg(yellow)${execi 60 nvidia-settings -t -q gpucoretemp}°C^fg() \
+#${else}\
+#${if_match ${execi 60 nvidia-settings -t -q gpucoretemp} < 200}\
+#^i(confs/xbm8x8/temp.xbm) ^fg(red)${execi 60 nvidia-settings -t -q gpucoretemp}°C^fg() \
+#${endif}\
+#${endif}\
+#${endif}\
+# Sound ------------------------------------------------------------------------
+#${if_match ${execi 1 ~/scripts/sound.sh} != 0}\
+#^i(confs/xbm8x8/spkr_01.xbm) ^fg(lightgray)${execi 1 ~/scripts/sound.sh}^fg() \
+#${else}\
+#^i(confs/xbm8x8/spkr_01.xbm) ^fg(red)Mute^fg() \
+#${endif}\
+# Battery  ---------------------------------------------------------------------
+${if_match ${battery_percent} < 5}\
+^fg(red)^i(confs/xbm8x8/bat_empty_02.xbm) ${battery_short}^fg() \
+${else}\
+${if_match ${battery_percent} < 40}\
+^fg(orange)^i(confs/xbm8x8/bat_low_02.xbm) ${battery_short}^fg() \
+${else}\
+${if_match ${battery_percent} < 65}\
+^fg(yellow)^i(confs/xbm8x8/bat_low_02.xbm) ${battery_short}^fg() \
+${else}\
+${if_match ${battery_percent} < 101}\
+^fg(green)^i(confs/xbm8x8/bat_full_02.xbm) ${battery_short}^fg() \
+${endif}\
+${endif}\
+${endif}\
+${endif}\
+# Time and Date ----------------------------------------------------------------
+^i(confs/xbm8x8/clock.xbm) ${time %b %e %H:%M:^fg(darkgray)%S^fg()} 
+]]
