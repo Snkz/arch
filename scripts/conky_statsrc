@@ -1,3 +1,4 @@
+--[[
 #-------------------------------------------------------------------------------
 # file:            /scripts/conky_statsrc                                              
 # author:          Abdi Dahir - I have no website :(                           
@@ -7,21 +8,24 @@
 # Conky settings, displays stuff. Pump it to bar. s'all good.
 # Various settings
 #-------------------------------------------------------------------------------
+]]
 
 
-background yes
-xftfont terminus:size=16
-gap_y -1024
-double_buffer yes
-out_to_console yes
-out_to_x no 
-own_window yes 
-own_window_type desktop
-update_interval 1 
-total_run_tomes 0
-userspacer none 
+conky.config = {
+  background = true,
+  font = 'terminus:size=16',
+  gap_y = -1024,
+  double_buffer = true,
+  out_to_console = true,
+  out_to_x = false,
+  own_window = true,
+  own_window_type = 'desktop',
+  update_interval = 1,
+  total_run_tomes = 0,
+  userspacer = 'none',
+}
 
-TEXT
+conky.text = [[
 # Network Connection -----------------------------------------------------------
 ${if_match ${wireless_link_qual_perc wlp1s0} < 10}\
 ^fg(red)^i(confs/xbm8x8/wifi_01.xbm) ${wireless_essid wlp1s0}^fg() \
@@ -80,3 +84,4 @@ ${endif}\
 ${endif}\
 # Time and Date ----------------------------------------------------------------
 ^i(confs/xbm8x8/clock.xbm) ${time %b %e %H:%M:^fg(darkgray)%S^fg()} 
+]]

@@ -1,6 +1,6 @@
 #!/bin/sh
 #-------------------------------------------------------------------------------
-# file:            ~/scripts/menu.sh                                            
+# file:            ~/scripts/power.sh                                            
 # author:          Abdi Dahir - I have no website :(                           
 # modified:        July 2014                                              
 # vim: set fenc=utf-8:nu:ai:si:et:ts=4:sw=4:                      

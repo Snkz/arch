@@ -35,12 +35,12 @@ home="^ib(1)^bg()^fg(lightblue)^p(+10)^i(confs/xbm8x8/pacman.xbm) Home ^p(+62)"
 info="^ib(1)^bg()^fg(yellow)^p(+10)^i(confs/xbm8x8/info_01.xbm) Info ^p(+62)"
 power="^ib(1)^bg()^fg(white)^p(+10)^i(confs/xbm8x8/half.xbm) Power ^p(+62)"
 # dzen settings
-terminus="xos4 Terminus:pixelsize=16"
+terminus="xos4 Terminus:pixelsize=14"
 #dzen="dzen2 -dock -fn \"$terminus\" -x 0 -y $height -w 80 -h 24 -l 4 -m -p"
 #terminus="-*-terminus-*-*-*-*-16-*-*-*-*-*-iso8859-*"
 dzen="dzen2 -x 0 -y $height -w 80 -h 24 -l 4 -m -p"
-#events="-e onstart=grabkeys;button1=menuprint,collapse,ungrabkeys;entertitle=uncollapse,grabmouse;leaveslave=collapse,ungrabmouse,ungrabkeys;button3=exit;key_Super_L=togglecollapse;"
-events="-e button1=ungrabmouse,menuprint,collapse;entertitle=uncollapse,grabmouse;leaveslave=collapse,ungrabmouse;button3=exit;"
+events="-e button1=menuprint,collapse,ungrabkeys;entertitle=uncollapse,grabmouse;leaveslave=collapse,ungrabmouse,ungrabkeys;button3=exit;key_Super_L=togglecollapse;"
+#events="-e button1=ungrabmouse,menuprint,collapse;entertitle=uncollapse,grabmouse;leaveslave=collapse,ungrabmouse;button3=exit;"
 
 (echo "$arch"; echo -e "$chrome\n$home\n$info\n$power") \
     | $dzen $events | xargs -n1 $0
